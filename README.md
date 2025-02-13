@@ -10,14 +10,15 @@ git clone <repository-url> /home/sandpi/receipts-dashboard
 cd /home/sandpi/receipts-dashboard
 ```
 
-2. Create and activate virtual environment:
+2. Install Apache and mod_wsgi:
 ```bash
-python3 -m venv venv
-source venv/bin/activate
+sudo apt-get update
+sudo apt-get install apache2 libapache2-mod-wsgi-py3
 ```
 
-3. Install dependencies:
+3. Install Python dependencies in the virtual environment:
 ```bash
+source /home/sandpi/pi-dashboard/venv/bin/activate
 pip install -r requirements.txt
 ```
 
@@ -26,30 +27,36 @@ pip install -r requirements.txt
 sqlite3 /home/sandpi/databases/receipts.db < schema.sql
 ```
 
-## Deployment
+## Apache Deployment
 
-1. Copy the service file to systemd:
+1. Remove default Apache site:
 ```bash
-sudo cp receipts-dashboard.service /etc/systemd/system/
+sudo a2dissite 000-default.conf
 ```
 
-2. Start and enable the service:
+2. Copy the Apache configuration:
 ```bash
-sudo systemctl daemon-reload
-sudo systemctl start receipts-dashboard
-sudo systemctl enable receipts-dashboard
+sudo cp receipts-dashboard.conf /etc/apache2/sites-available/
 ```
 
-3. Check service status:
+3. Enable the site and mod_wsgi:
 ```bash
-sudo systemctl status receipts-dashboard
+sudo a2ensite receipts-dashboard
+sudo a2enmod wsgi
 ```
 
-The application will now:
-- Start automatically on boot
-- Restart if it crashes
-- Run on port 5000
-- Be accessible at `http://<raspberry-pi-ip>:5000`
+4. Test Apache configuration:
+```bash
+sudo apache2ctl configtest
+```
+
+5. Restart Apache:
+```bash
+sudo systemctl restart apache2
+```
+
+The application will now be available at:
+`http://<raspberry-pi-ip>/`
 
 ## Features
 
@@ -70,6 +77,9 @@ The application will now:
 
 ## Maintenance
 
-- View logs: `sudo journalctl -u receipts-dashboard`
-- Restart service: `sudo systemctl restart receipts-dashboard`
-- Stop service: `sudo systemctl stop receipts-dashboard`
+- View Apache logs:
+  ```bash
+  sudo tail -f /var/log/apache2/receipts-dashboard-error.log
+  sudo tail -f /var/log/apache2/receipts-dashboard-access.log
+  ```
+- Restart Apache: `sudo systemctl restart apache2`
