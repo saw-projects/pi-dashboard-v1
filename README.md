@@ -1,85 +1,63 @@
-# Receipts Dashboard
+# Pi Dashboard
 
-A lightweight Flask web application designed for Raspberry Pi Zero to manage receipts and expenses.
+A lightweight Flask web application designed for Raspberry Pi Zero to manage various services including receipts, sandpi monitoring, and web scraping.
 
 ## Setup
 
 1. Clone the repository to your Raspberry Pi:
 ```bash
-git clone <repository-url> /home/sandpi/receipts-dashboard
-cd /home/sandpi/receipts-dashboard
+git clone <repository-url> /home/sandpi/pi-dashboard
+cd /home/sandpi/pi-dashboard
 ```
 
-2. Install Apache and mod_wsgi:
+2. Create and set up Python virtual environment:
 ```bash
-sudo apt-get update
-sudo apt-get install apache2 libapache2-mod-wsgi-py3
-```
-
-3. Install Python dependencies in the virtual environment:
-```bash
+python3 -m venv /home/sandpi/pi-dashboard/venv
 source /home/sandpi/pi-dashboard/venv/bin/activate
 pip install -r requirements.txt
 ```
 
-4. Initialize database:
+3. Initialize database and set permissions:
 ```bash
+# Create database directory
+sudo mkdir -p /home/sandpi/databases
+sudo chown sandpi:sandpi /home/sandpi/databases
+
+# Initialize database
 sqlite3 /home/sandpi/databases/receipts.db < schema.sql
+
+# Create uploads directory
+mkdir -p uploads
+chmod 755 uploads
 ```
 
-## Apache Deployment
+## Running the Application
 
-1. Remove default Apache site:
+1. Start the Flask application:
 ```bash
-sudo a2dissite 000-default.conf
+source /home/sandpi/pi-dashboard/venv/bin/activate
+python app.py
 ```
 
-2. Copy the Apache configuration:
-```bash
-sudo cp receipts-dashboard.conf /etc/apache2/sites-available/
-```
-
-3. Enable the site and mod_wsgi:
-```bash
-sudo a2ensite receipts-dashboard
-sudo a2enmod wsgi
-```
-
-4. Test Apache configuration:
-```bash
-sudo apache2ctl configtest
-```
-
-5. Restart Apache:
-```bash
-sudo systemctl restart apache2
-```
-
-The application will now be available at:
-`http://<raspberry-pi-ip>/`
+The application will be available at:
+`http://<raspberry-pi-ip>:5000`
 
 ## Features
 
-- Simple web interface for entering receipts with PDF attachments
-- View recent receipts (last 20 entries)
-- Automatic date-based organization
-- Minimal resource usage for Raspberry Pi Zero
+- Multi-service dashboard interface
+- Receipts Management:
+  - Enter receipts with PDF attachments
+  - View recent receipts (last 20 entries)
+  - Automatic date-based organization
+- Sandpi Monitoring (coming soon)
+- Web Scraper Interface (coming soon)
 - PDF storage in `uploads/` directory
 - SQLite database at `/home/sandpi/databases/receipts.db`
 
 ## Routes
 
 - `/` - Main dashboard
-- `/receipts` - Enter new receipt
+- `/receipts` - Receipts dashboard
 - `/view-receipts` - View recent entries
-- `/sandpi` - Sandpi dashboard (coming soon)
-- `/scraper` - Scraper dashboard (coming soon)
-
-## Maintenance
-
-- View Apache logs:
-  ```bash
-  sudo tail -f /var/log/apache2/receipts-dashboard-error.log
-  sudo tail -f /var/log/apache2/receipts-dashboard-access.log
-  ```
-- Restart Apache: `sudo systemctl restart apache2`
+- `/sandpi` - Sandpi monitoring dashboard
+- `/scraper` - Web scraper dashboard
