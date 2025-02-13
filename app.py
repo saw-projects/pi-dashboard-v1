@@ -1,10 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 import sqlite3
 from datetime import datetime
 import os
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['UPLOAD_FOLDER'] = '/home/sandpi/pi-dashboard/uploads'
 DATABASE = '/home/sandpi/databases/receipts.db'
 
 # Ensure upload directory exists
@@ -32,6 +32,7 @@ def receipts():
         # Get form data
         paid_to = request.form['paid_to']
         date_paid = request.form['date_paid']
+        amount = float(request.form['amount'])
         expense_type = request.form['expense_type']
         invoice_number = request.form['invoice_number']
         notes = request.form['notes']
@@ -55,12 +56,12 @@ def receipts():
         db = get_db()
         db.execute('''
             INSERT INTO receipts 
-            (paid_to, date_paid, expense_type, invoice_number, notes, llc, property, year, month, pdf_path)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (paid_to, date_paid, expense_type, invoice_number, notes, llc, property_name, year, month, pdf_path))
+            (paid_to, date_paid, amount, expense_type, invoice_number, notes, llc, property, year, month, pdf_path)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (paid_to, date_paid, amount, expense_type, invoice_number, notes, llc, property_name, year, month, pdf_path))
         db.commit()
         
-        return redirect(url_for('receipts'))
+        return redirect(url_for('view_receipts'))
     
     return render_template('receipts.html', current_date=datetime.now().strftime('%Y-%m-%d'))
 
@@ -68,13 +69,17 @@ def receipts():
 def view_receipts():
     db = get_db()
     receipts = db.execute('''
-        SELECT date_paid, paid_to, expense_type, invoice_number, 
+        SELECT date_paid, paid_to, amount, expense_type, invoice_number, 
                llc, property, notes, pdf_path
         FROM receipts 
         ORDER BY date_paid DESC, id DESC 
         LIMIT 20
     ''').fetchall()
     return render_template('view_receipts.html', receipts=receipts)
+
+@app.route('/uploads/<path:filename>')
+def serve_pdf(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 @app.route('/sandpi')
 def sandpi():

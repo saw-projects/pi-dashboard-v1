@@ -12,7 +12,7 @@ echo "Setting permissions..."
 sudo chown sandpi:sandpi /home/sandpi/databases
 chmod 755 uploads
 
-# Create and activate virtual environment
+# Create and activate virtual environmentsource 
 echo "Setting up Python virtual environment..."
 python3 -m venv /home/sandpi/pi-dashboard/venv
 source /home/sandpi/pi-dashboard/venv/bin/activate

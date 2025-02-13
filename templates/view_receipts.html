@@ -1,129 +1,76 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Recent Receipts</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .navbar {
-            background-color: #333;
-            overflow: hidden;
-            padding: 0 20px;
-        }
-        
-        .navbar a {
-            float: left;
-            color: white;
-            text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-            font-size: 17px;
-            transition: background-color 0.3s;
-        }
-        
-        .navbar a:hover {
-            background-color: #ddd;
-            color: black;
-        }
-        
-        .navbar a.active {
-            background-color: #4CAF50;
-            color: white;
-        }
-        
-        .content {
-            flex: 1;
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background-color: #fff;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-        }
-        
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
-        
-        tr:nth-child(even) {
-            background-color: #f5f5f5;
-        }
-        
-        tr:hover {
-            background-color: #f0f0f0;
-        }
-        
-        .pdf-link {
-            color: #4CAF50;
-            text-decoration: none;
-        }
-        
-        .pdf-link:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-<body>
-    <nav class="navbar">
-        <a href="/">Home</a>
-        <a href="/sandpi">Sandpi Dashboard</a>
-        <a href="/receipts">Receipts Dashboard</a>
-        <a href="/scraper">Scraper Dashboard</a>
-    </nav>
+{% extends "base.html" %}
+
+{% block title %}Pi Dashboard - View Receipts{% endblock %}
+
+{% block additional_styles %}
+<style>
+    .receipts-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
     
-    <div class="content">
-        <h1>Recent Receipts</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>Date Paid</th>
-                    <th>Paid To</th>
-                    <th>Expense Type</th>
-                    <th>Invoice #</th>
-                    <th>LLC</th>
-                    <th>Property</th>
-                    <th>Notes</th>
-                    <th>PDF</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for receipt in receipts %}
-                <tr>
-                    <td>{{ receipt.date_paid }}</td>
-                    <td>{{ receipt.paid_to }}</td>
-                    <td>{{ receipt.expense_type }}</td>
-                    <td>{{ receipt.invoice_number }}</td>
-                    <td>{{ receipt.llc }}</td>
-                    <td>{{ receipt.property }}</td>
-                    <td>{{ receipt.notes }}</td>
-                    <td>
-                        {% if receipt.pdf_path %}
-                        <a href="{{ receipt.pdf_path }}" class="pdf-link" target="_blank">View PDF</a>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</body>
-</html>
+    .receipts-table th,
+    .receipts-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+    
+    .receipts-table th {
+        background-color: #f5f5f5;
+        font-weight: bold;
+    }
+    
+    .receipts-table tr:hover {
+        background-color: #f9f9f9;
+    }
+    
+    .pdf-link {
+        color: #4CAF50;
+        text-decoration: none;
+    }
+    
+    .pdf-link:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Recent Receipts</h1>
+<table class="receipts-table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Paid To</th>
+            <th>Amount</th>
+            <th>Type</th>
+            <th>Invoice #</th>
+            <th>LLC</th>
+            <th>Property</th>
+            <th>Notes</th>
+            <th>PDF</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for receipt in receipts %}
+        <tr>
+            <td>{{ receipt.date_paid }}</td>
+            <td>{{ receipt.paid_to }}</td>
+            <td>${{ "%.2f"|format(receipt.amount) }}</td>
+            <td>{{ receipt.expense_type }}</td>
+            <td>{{ receipt.invoice_number }}</td>
+            <td>{{ receipt.llc }}</td>
+            <td>{{ receipt.property }}</td>
+            <td>{{ receipt.notes }}</td>
+            <td>
+                {% if receipt.pdf_path %}
+                    <a href="{{ url_for('serve_pdf', filename=receipt.pdf_path.split('/')[-1]) }}" class="pdf-link" target="_blank">View PDF</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

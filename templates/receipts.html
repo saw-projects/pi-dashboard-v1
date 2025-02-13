@@ -1,108 +1,177 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Receipt Dashboard</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 0 20px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: inline-block;
-            width: 120px;
-        }
-        input, select {
-            padding: 5px;
-            margin: 5px 0;
-        }
-        fieldset {
-            margin-bottom: 20px;
-            padding: 10px;
-        }
-        button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-    </style>
-</head>
-<body>
-    <h1>Receipt Entry</h1>
+{% extends "base.html" %}
+
+{% block title %}Pi Dashboard - Enter Receipt{% endblock %}
+
+{% block additional_styles %}
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 30px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 6px;
+        border: 1px solid #e9ecef;
+    }
+    
+    label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #333;
+        font-size: 0.95em;
+    }
+    
+    input[type="text"],
+    input[type="date"],
+    input[type="number"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 16px;
+        background-color: white;
+        transition: border-color 0.3s ease;
+    }
+    
+    input[type="text"]:focus,
+    input[type="date"]:focus,
+    input[type="number"]:focus,
+    select:focus,
+    textarea:focus {
+        border-color: #4CAF50;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+    }
+
+    input[type="file"] {
+        padding: 10px;
+        background-color: white;
+        border: 2px dashed #ddd;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    button[type="submit"] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        width: 100%;
+        margin-top: 20px;
+        transition: background-color 0.3s;
+    }
+    
+    button[type="submit"]:hover {
+        background-color: #45a049;
+    }
+
+    /* Optional field styling */
+    .optional-field {
+        color: #666;
+        font-size: 0.8em;
+        margin-left: 5px;
+        font-weight: normal;
+    }
+
+    /* Required field marker */
+    .required-field::after {
+        content: "*";
+        color: #dc3545;
+        margin-left: 4px;
+    }
+
+    /* Field hints */
+    .field-hint {
+        font-size: 0.85em;
+        color: #666;
+        margin-top: 4px;
+        margin-bottom: 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h1>Enter New Receipt</h1>
     <form method="POST" enctype="multipart/form-data">
-        <fieldset>
-            <legend>Receipt Details</legend>
-            <div class="form-group">
-                <label for="paid_to">Paid To:</label>
-                <input type="text" id="paid_to" name="paid_to" required>
-            </div>
-            <div class="form-group">
-                <label for="date_paid">Date Paid:</label>
-                <input type="date" id="date_paid" name="date_paid" value="{{ current_date }}" required>
-            </div>
-            <div class="form-group">
-                <label for="expense_type">Expense Type:</label>
-                <select id="expense_type" name="expense_type" required>
-                    <option value="">Select Type</option>
-                    <option value="Utilities">Utilities</option>
-                    <option value="Maintenance">Maintenance</option>
-                    <option value="Repairs">Repairs</option>
-                    <option value="Insurance">Insurance</option>
-                    <option value="Property Tax">Property Tax</option>
-                    <option value="Other">Other</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="invoice_number">Invoice #:</label>
-                <input type="text" id="invoice_number" name="invoice_number">
-            </div>
-            <div class="form-group">
-                <label for="notes">Notes:</label>
-                <input type="text" id="notes" name="notes">
-            </div>
-        </fieldset>
+        <div class="form-group">
+            <label for="paid_to" class="required-field">Paid To</label>
+            <input type="text" id="paid_to" name="paid_to" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="date_paid" class="required-field">Date</label>
+            <input type="date" id="date_paid" name="date_paid" value="{{ current_date }}" required>
+        </div>
 
-        <fieldset>
-            <legend>Property Information</legend>
-            <div class="form-group">
-                <label for="llc">LLC:</label>
-                <input type="text" id="llc" name="llc" required>
-            </div>
-            <div class="form-group">
-                <label for="property">Property:</label>
-                <input type="text" id="property" name="property" required>
-            </div>
-        </fieldset>
-
-        <fieldset>
-            <legend>Receipt Upload</legend>
-            <div class="form-group">
-                <label for="pdf_file">PDF File:</label>
-                <input type="file" id="pdf_file" name="pdf_file" accept=".pdf">
-            </div>
-        </fieldset>
-
+        <div class="form-group">
+            <label for="amount" class="required-field">Amount ($)</label>
+            <input type="number" id="amount" name="amount" step="0.01" min="0" required>
+            <p class="field-hint">Enter the total amount paid</p>
+        </div>
+        
+        <div class="form-group">
+            <label for="expense_type" class="required-field">Expense Type</label>
+            <select id="expense_type" name="expense_type" required>
+                <option value="">Select Type</option>
+                <option value="Utilities">Utilities</option>
+                <option value="Maintenance">Maintenance</option>
+                <option value="Supplies">Supplies</option>
+                <option value="Insurance">Insurance</option>
+                <option value="Property Tax">Property Tax</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="invoice_number">Invoice Number <span class="optional-field">(optional)</span></label>
+            <input type="text" id="invoice_number" name="invoice_number">
+        </div>
+        
+        <div class="form-group">
+            <label for="llc" class="required-field">LLC</label>
+            <select id="llc" name="llc" required>
+                <option value="">Select LLC</option>
+                <option value="Sandpiper">Sandpiper</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="property" class="required-field">Property</label>
+            <select id="property" name="property" required>
+                <option value="">Select Property</option>
+                <option value="Main">Main</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="notes">Notes <span class="optional-field">(optional)</span></label>
+            <textarea id="notes" name="notes" rows="4"></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="pdf_file">PDF Receipt <span class="optional-field">(optional)</span></label>
+            <input type="file" id="pdf_file" name="pdf_file" accept=".pdf">
+            <p class="field-hint">Upload a PDF copy of the receipt if available</p>
+        </div>
+        
         <button type="submit">Submit Receipt</button>
     </form>
-
-    <script>
-        // Auto-populate year and month from date_paid
-        document.getElementById('date_paid').addEventListener('change', function() {
-            const dateValue = this.value;
-            if (dateValue) {
-                const date = new Date(dateValue);
-                // Year and month are handled server-side, no need to add hidden fields
-            }
-        });
-    </script>
-</body>
-</html>
+</div>
+{% endblock %}

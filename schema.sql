@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS receipts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     paid_to TEXT NOT NULL,
     date_paid DATE NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
     expense_type TEXT NOT NULL,
     invoice_number TEXT,
     notes TEXT,
