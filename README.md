@@ -2,12 +2,13 @@
 
 A lightweight Flask web application designed for Raspberry Pi Zero to manage various services including receipts, sandpi monitoring, and web scraping.
 
-## Setup
+## Initial Setup
 
-1. Clone the repository to your Raspberry Pi:
+1. Clone the repository (only needed once):
 ```bash
-git clone <repository-url> /home/sandpi/pi-dashboard
-cd /home/sandpi/pi-dashboard
+cd /home/sandpi
+git clone https://github.com/your-username/pi-dashboard.git
+cd pi-dashboard
 ```
 
 2. Create and set up Python virtual environment:
@@ -30,6 +31,29 @@ sqlite3 /home/sandpi/databases/receipts.db < schema.sql
 mkdir -p uploads
 chmod 755 uploads
 ```
+
+## Updating the Application
+
+When updates are available:
+
+1. SSH into your Raspberry Pi
+2. Navigate to the application directory:
+```bash
+cd /home/sandpi/pi-dashboard
+```
+
+3. Pull the latest changes:
+```bash
+git pull origin main
+```
+
+4. Update dependencies (if requirements.txt changed):
+```bash
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+5. Restart the application if it's running
 
 ## Running the Application
 
@@ -57,7 +81,7 @@ The application will be available at:
 ## Routes
 
 - `/` - Main dashboard
-- `/receipts` - Receipts dashboard
+- `/receipts` - Enter new receipt
 - `/view-receipts` - View recent entries
 - `/sandpi` - Sandpi monitoring dashboard
 - `/scraper` - Web scraper dashboard

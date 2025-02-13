@@ -101,6 +101,11 @@
         margin-top: 4px;
         margin-bottom: 0;
     }
+
+    /* Datalist styling */
+    input[list] {
+        width: 100%;
+    }
 </style>
 {% endblock %}
 
@@ -144,20 +149,26 @@
         
         <div class="form-group">
             <label for="llc" class="required-field">LLC</label>
-            <select id="llc" name="llc" required>
-                <option value="">Select LLC</option>
-                <option value="Sandpiper">Sandpiper</option>
-                <option value="Other">Other</option>
-            </select>
+            <input type="text" id="llc" name="llc" list="llc-suggestions" required>
+            <datalist id="llc-suggestions">
+                <option value="Ada County Properties">
+                <option value="Blaine County Properties">
+                <option value="Jerome County Properties">
+                <option value="Other">
+            </datalist>
+            <p class="field-hint">Enter LLC name or select from suggestions</p>
         </div>
         
         <div class="form-group">
             <label for="property" class="required-field">Property</label>
-            <select id="property" name="property" required>
-                <option value="">Select Property</option>
-                <option value="Main">Main</option>
-                <option value="Other">Other</option>
-            </select>
+            <input type="text" id="property" name="property" list="property-suggestions" required>
+            <datalist id="property-suggestions">
+                <option value="334 S 300 W">
+                <option value="Jewell">
+                <option value="350 S 300 W">
+                <option value="Other">
+            </datalist>
+            <p class="field-hint">Enter property name or select from suggestions</p>
         </div>
         
         <div class="form-group">
