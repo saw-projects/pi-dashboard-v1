@@ -1,0 +1,14 @@
+[Unit]
+Description=Receipts Dashboard
+After=network.target
+
+[Service]
+User=sandpi
+Group=sandpi
+WorkingDirectory=/home/sandpi/receipts-dashboard
+Environment="PATH=/home/sandpi/receipts-dashboard/venv/bin"
+ExecStart=/home/sandpi/receipts-dashboard/venv/bin/gunicorn --workers 1 --bind 0.0.0.0:5000 wsgi:app
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

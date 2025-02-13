@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+            padding: 0 20px;
+        }
+        
+        .navbar a {
+            float: left;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+            transition: background-color 0.3s;
+        }
+        
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        
+        .navbar a.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .content {
+            flex: 1;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .card {
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .card p {
+            color: #666;
+        }
+        
+        .card .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        
+        .card .button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+            flex: 1;
+            max-width: 150px;
+        }
+        
+        .card .button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="active">Home</a>
+        <a href="/sandpi">Sandpi Dashboard</a>
+        <a href="/receipts">Receipts Dashboard</a>
+        <a href="/scraper">Scraper Dashboard</a>
+    </nav>
+    
+    <div class="content">
+        <h1>Welcome to the Dashboard</h1>
+        <div class="dashboard-cards">
+            <div class="card">
+                <h2>Sandpi Dashboard</h2>
+                <p>Monitor and control your Sandpi system</p>
+                <a href="/sandpi">Access Sandpi</a>
+            </div>
+            
+            <div class="card">
+                <h2>Receipts Dashboard</h2>
+                <p>Manage and track your receipts and expenses</p>
+                <div class="button-group">
+                    <a href="/receipts" class="button">Enter Receipt</a>
+                    <a href="/view-receipts" class="button">View Recent Receipts</a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>Scraper Dashboard</h2>
+                <p>View and manage web scraping tasks</p>
+                <a href="/scraper">View Scraper</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Receipt Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: inline-block;
+            width: 120px;
+        }
+        input, select {
+            padding: 5px;
+            margin: 5px 0;
+        }
+        fieldset {
+            margin-bottom: 20px;
+            padding: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Receipt Entry</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <fieldset>
+            <legend>Receipt Details</legend>
+            <div class="form-group">
+                <label for="paid_to">Paid To:</label>
+                <input type="text" id="paid_to" name="paid_to" required>
+            </div>
+            <div class="form-group">
+                <label for="date_paid">Date Paid:</label>
+                <input type="date" id="date_paid" name="date_paid" value="{{ current_date }}" required>
+            </div>
+            <div class="form-group">
+                <label for="expense_type">Expense Type:</label>
+                <select id="expense_type" name="expense_type" required>
+                    <option value="">Select Type</option>
+                    <option value="Utilities">Utilities</option>
+                    <option value="Maintenance">Maintenance</option>
+                    <option value="Repairs">Repairs</option>
+                    <option value="Insurance">Insurance</option>
+                    <option value="Property Tax">Property Tax</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="invoice_number">Invoice #:</label>
+                <input type="text" id="invoice_number" name="invoice_number">
+            </div>
+            <div class="form-group">
+                <label for="notes">Notes:</label>
+                <input type="text" id="notes" name="notes">
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Property Information</legend>
+            <div class="form-group">
+                <label for="llc">LLC:</label>
+                <input type="text" id="llc" name="llc" required>
+            </div>
+            <div class="form-group">
+                <label for="property">Property:</label>
+                <input type="text" id="property" name="property" required>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Receipt Upload</legend>
+            <div class="form-group">
+                <label for="pdf_file">PDF File:</label>
+                <input type="file" id="pdf_file" name="pdf_file" accept=".pdf">
+            </div>
+        </fieldset>
+
+        <button type="submit">Submit Receipt</button>
+    </form>
+
+    <script>
+        // Auto-populate year and month from date_paid
+        document.getElementById('date_paid').addEventListener('change', function() {
+            const dateValue = this.value;
+            if (dateValue) {
+                const date = new Date(dateValue);
+                // Year and month are handled server-side, no need to add hidden fields
+            }
+        });
+    </script>
+</body>
+</html>
