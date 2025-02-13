@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}Pi Dashboard - Edit Receipt{% endblock %}
+
+{% block additional_styles %}
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 30px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 6px;
+        border: 1px solid #e9ecef;
+    }
+    
+    label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #333;
+        font-size: 0.95em;
+    }
+    
+    input[type="text"],
+    input[type="date"],
+    input[type="number"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 16px;
+        background-color: white;
+        transition: border-color 0.3s ease;
+    }
+    
+    input[type="text"]:focus,
+    input[type="date"]:focus,
+    input[type="number"]:focus,
+    select:focus,
+    textarea:focus {
+        border-color: #4CAF50;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+    }
+
+    input[type="file"] {
+        padding: 10px;
+        background-color: white;
+        border: 2px dashed #ddd;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    button[type="submit"] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        width: 100%;
+        margin-top: 20px;
+        transition: background-color 0.3s;
+    }
+    
+    button[type="submit"]:hover {
+        background-color: #45a049;
+    }
+
+    .optional-field {
+        color: #666;
+        font-size: 0.8em;
+        margin-left: 5px;
+        font-weight: normal;
+    }
+
+    .required-field::after {
+        content: "*";
+        color: #dc3545;
+        margin-left: 4px;
+    }
+
+    .field-hint {
+        font-size: 0.85em;
+        color: #666;
+        margin-top: 4px;
+        margin-bottom: 0;
+    }
+
+    .current-pdf {
+        margin-top: 10px;
+        font-size: 0.9em;
+        color: #666;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h1>Edit Receipt</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="paid_to" class="required-field">Paid To</label>
+            <input type="text" id="paid_to" name="paid_to" value="{{ receipt.paid_to }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="date_paid" class="required-field">Date</label>
+            <input type="date" id="date_paid" name="date_paid" value="{{ receipt.date_paid }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="amount" class="required-field">Amount ($)</label>
+            <input type="number" id="amount" name="amount" step="0.01" min="0" value="{{ receipt.amount }}" required>
+            <p class="field-hint">Enter the total amount paid</p>
+        </div>
+        
+        <div class="form-group">
+            <label for="expense_type" class="required-field">Expense Type</label>
+            <select id="expense_type" name="expense_type" required>
+                <option value="">Select Type</option>
+                <option value="Utilities" {% if receipt.expense_type == 'Utilities' %}selected{% endif %}>Utilities</option>
+                <option value="Maintenance" {% if receipt.expense_type == 'Maintenance' %}selected{% endif %}>Maintenance</option>
+                <option value="Supplies" {% if receipt.expense_type == 'Supplies' %}selected{% endif %}>Supplies</option>
+                <option value="Insurance" {% if receipt.expense_type == 'Insurance' %}selected{% endif %}>Insurance</option>
+                <option value="Property Tax" {% if receipt.expense_type == 'Property Tax' %}selected{% endif %}>Property Tax</option>
+                <option value="Other" {% if receipt.expense_type == 'Other' %}selected{% endif %}>Other</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="invoice_number">Invoice Number <span class="optional-field">(optional)</span></label>
+            <input type="text" id="invoice_number" name="invoice_number" value="{{ receipt.invoice_number }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="llc" class="required-field">LLC</label>
+            <input type="text" id="llc" name="llc" list="llc-suggestions" value="{{ receipt.llc }}" required>
+            <datalist id="llc-suggestions">
+                <option value="Ada County Properties">
+                <option value="Blaine County Properties">
+                <option value="Jerome County Properties">
+                <option value="Other">
+            </datalist>
+            <p class="field-hint">Enter LLC name or select from suggestions</p>
+        </div>
+        
+        <div class="form-group">
+            <label for="property" class="required-field">Property</label>
+            <input type="text" id="property" name="property" list="property-suggestions" value="{{ receipt.property }}" required>
+            <datalist id="property-suggestions">
+                <option value="334 S 300 W">
+                <option value="Jewell">
+                <option value="350 S 300 W">
+                <option value="Other">
+            </datalist>
+            <p class="field-hint">Enter property name or select from suggestions</p>
+        </div>
+        
+        <div class="form-group">
+            <label for="notes">Notes <span class="optional-field">(optional)</span></label>
+            <textarea id="notes" name="notes" rows="4">{{ receipt.notes }}</textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="pdf_file">PDF Receipt <span class="optional-field">(optional)</span></label>
+            {% if receipt.pdf_path %}
+                <div class="current-pdf">Current PDF: {{ receipt.pdf_path.split('/')[-1] }}</div>
+            {% endif %}
+            <input type="file" id="pdf_file" name="pdf_file" accept=".pdf">
+            <p class="field-hint">Upload a new PDF to replace the current one</p>
+        </div>
+        
+        <button type="submit">Save Changes</button>
+    </form>
+</div>
+{% endblock %}
